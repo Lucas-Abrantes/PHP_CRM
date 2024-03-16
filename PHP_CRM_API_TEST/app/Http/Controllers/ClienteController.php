@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use \App\Models\Cliente;
 
 class ClienteController extends Controller
 {
@@ -13,14 +13,10 @@ class ClienteController extends Controller
      */
     public function index(Request $request)
     {
-        $clients = User::orderBy('created_at', 'desc')
-        ->where('status', 1)
-        ->withRequestFilters($request)
-        ->orderByRaw('created_at DESC');
+       $clientes = Cliente::all();
 
-        return $clients;
+       return response()->json($clientes);
     }
-
     /**
      * Store a newly created resource in storage.
      */
@@ -37,11 +33,9 @@ class ClienteController extends Controller
         $data['password'] = Hash::make($request->password);
 
         try {
-            auth()->user()->store($data);
+            $cliente = Cliente::create($data);
         } catch (\Exception $e) {
             throw $e;
-
-            return $this->sendError('Erro', [], 400);
         }
 
         return $this->sendResponse([], 'Cliente criado');
@@ -52,7 +46,7 @@ class ClienteController extends Controller
      */
     public function show(string $id)
     {
-        $client = User::where('id', $id)->firstOrFail();
+        $client = Cliente::where('id', $id)->firstOrFail();
 
         return $client;
     }
@@ -60,28 +54,21 @@ class ClienteController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function update(Request $request, string $id)
     {
         $data = $request->validate([
             'name' => 'required',
-            'password' => 'nullable|min:8|confirmed',
             'email' => 'required',
             'empresa' => 'required',
-            'telefone' => 'required'
+            'telefone' => 'required',
+            'status'=> 'required'
         ]);
 
-        if ($request->password) {
-            $data['password'] = Hash::make($request->password);
-        } else {
-            unset($data['password']);
-        }
-
         try {
-            auth()->user()->update($data);
+            $cliente = Cliente::findOrFail($id);
+            $cliente->update($data);
         } catch (\Exception $e) {
             throw $e;
-
-            return $this->sendError('Erro', [], 403);
         }
 
         return $this->sendResponse([], 'Cliente atualizado');
@@ -93,15 +80,13 @@ class ClienteController extends Controller
     public function destroy(string $id)
     {
         try {
-            User::where('id', $id)->delete();
+            $cliente = Cliente::findOrFail($id);
+            $cliente->delete();
 
         } catch (\Exception $e) {
             throw $e;
-
-            return $this->sendError('Erro', [], 400);
         }
         
-        return 'Cliente deletado hahaha';
-
+        return 'Cliente deletado';
     }
 }
