@@ -9,7 +9,7 @@ class Cliente extends Model
       protected $table = 'clientes';
 
       // Define quais colunas podem ser preenchidas
-      protected $fillable = ['nome', 'email', 'telefone', 'empresa', 'status'];
+      protected $fillable = ['nome', 'email', 'telefone', 'empresa', 'status', 'senha'];
   
       // Se você tiver timestamps (created_at, updated_at) e quiser usá-los, certifique-se de que está ativado (padrão é true)
       public $timestamps = true;

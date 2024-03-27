@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('telefone');
             $table->string('empresa');
             $table->enum('status', ['ativo', 'inativo'])->default('ativo');
+            $table->string('senha'); // Campo senha adicionado
+            $table->rememberToken();
             $table->timestamps();
         });
     }

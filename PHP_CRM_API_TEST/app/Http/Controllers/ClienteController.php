@@ -8,6 +8,7 @@ use \App\Models\Cliente;
 
 class ClienteController extends Controller
 {
+    
     /**
      * Display a listing of the resource.
      */
@@ -23,14 +24,15 @@ class ClienteController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required',
-            'password' => 'required|min:8|confirmed',
+            'nome' => 'required',
+            'senha' => 'required',
             'email' => 'required',
             'empresa' => 'required',
-            'telefone' => 'required'
+            'telefone' => 'required',
+            'status' => 'required'
         ]);
 
-        $data['password'] = Hash::make($request->password);
+        $data['senha'] = Hash::make($request->senha);
 
         try {
             $cliente = Cliente::create($data);
@@ -57,7 +59,7 @@ class ClienteController extends Controller
     public function update(Request $request, string $id)
     {
         $data = $request->validate([
-            'name' => 'required',
+            'nome' => 'required',
             'email' => 'required',
             'empresa' => 'required',
             'telefone' => 'required',
@@ -89,4 +91,13 @@ class ClienteController extends Controller
         
         return 'Cliente deletado';
     }
+    public function sendResponse($result, $message)
+    {
+        return [
+            'success' => true,
+            'data'    => $result,
+            'message' => $message,
+        ];
+    }
+   
 }
