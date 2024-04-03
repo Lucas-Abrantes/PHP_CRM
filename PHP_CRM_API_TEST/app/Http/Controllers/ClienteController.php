@@ -63,11 +63,16 @@ class ClienteController extends Controller
             'email' => 'required',
             'empresa' => 'required',
             'telefone' => 'required',
-            'status'=> 'required'
+            'status'=> 'required',
+           
         ]);
+
 
         try {
             $cliente = Cliente::findOrFail($id);
+            if ($request->has('senha') && !empty($request->senha)) {
+                $data['senha'] = bcrypt($request->senha);
+            }
             $cliente->update($data);
         } catch (\Exception $e) {
             throw $e;
